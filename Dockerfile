@@ -14,6 +14,9 @@ COPY package.json pnpm-lock.yaml ./
 # Install dependencies (rebuild native modules)
 RUN pnpm install --force
 
+# Rebuild bcrypt for Alpine
+RUN pnpm rebuild bcrypt
+
 # Copy source
 COPY . .
 
