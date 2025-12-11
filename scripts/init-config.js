@@ -1,7 +1,13 @@
 const fs = require('fs');
 const path = require('path');
+const crypto = require('crypto');
 
 const configPath = '/app/config/nsecbunker.json';
+
+// Generate a random admin key
+function generateAdminKey() {
+  return crypto.randomBytes(32).toString('hex');
+}
 
 // Default config with nip46 relay
 const defaultConfig = {
@@ -16,7 +22,9 @@ const defaultConfig = {
     ],
     "adminRelays": [
       "wss://nip46.stevennoack.de"
-    ]
+    ],
+    "key": generateAdminKey(),
+    "notifyAdminsOnBoot": true
   },
   "database": "sqlite://nsecbunker.db",
   "logs": "./nsecbunker.log",
@@ -33,6 +41,16 @@ if (!fs.existsSync(configPath)) {
   console.log('✅ Config created at', configPath);
 } else {
   console.log('✅ Config exists at', configPath);
+  
+  // Check if admin key exists
+  const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+  if (!config.admin || !config.admin.key) {
+    console.log('🔑 Adding missing admin key...');
+    if (!config.admin) config.admin = {};
+    config.admin.key = generateAdminKey();
+    fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+    console.log('✅ Admin key added');
+  }
 }
 
 // Load existing config
