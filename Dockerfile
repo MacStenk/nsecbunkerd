@@ -22,4 +22,4 @@ RUN mkdir -p /app/config
 
 EXPOSE 3000
 
-CMD ["node", "./scripts/start.js", "start", "--keys", "steven"]
+CMD ["node", "./scripts/start.js", "start", "--key", "steven"]
