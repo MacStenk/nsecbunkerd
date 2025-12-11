@@ -22,4 +22,4 @@ RUN mkdir -p /app/config
 
 EXPOSE 3000
 
-CMD sh -c "node ./scripts/init-config.js && node ./scripts/start.js start --key $NSECBUNKER_KEY"
+CMD sh -c "node ./scripts/init-config.js && if [ -n \"$NSECBUNKER_KEY\" ]; then node ./scripts/start.js start --key $NSECBUNKER_KEY; else node ./scripts/start.js start; fi"
