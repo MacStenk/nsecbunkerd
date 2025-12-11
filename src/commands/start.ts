@@ -167,23 +167,44 @@ async function startKey(key: string, keyData: KeyData, verbose: boolean): Promis
 
     return new Promise((resolve) => {
         if (keyData.iv && keyData.data) {
-            rl.question(`Enter passphrase for ${key}: `, (passphrase: string) => {
+            // Check for environment variable first
+            const envPassphrase = process.env.NSECBUNKER_PASSPHRASE;
+            
+            if (envPassphrase) {
                 try {
                     const { iv, data } = keyData;
-                    const nsec = decryptNsec(iv!, data!, passphrase);
+                    const nsec = decryptNsec(iv!, data!, envPassphrase);
 
                     if (verbose) {
-                        console.log(`Starting ${key}...`);
+                        console.log(`Starting ${key} (using env passphrase)...`);
                     }
 
                     rl.close();
-
                     resolve(nsec);
                 } catch (e: any) {
-                    console.log(e.message);
+                    console.log(`Failed to decrypt with env passphrase: ${e.message}`);
                     process.exit(1);
                 }
-            });
+            } else {
+                // Fallback to interactive prompt
+                rl.question(`Enter passphrase for ${key}: `, (passphrase: string) => {
+                    try {
+                        const { iv, data } = keyData;
+                        const nsec = decryptNsec(iv!, data!, passphrase);
+
+                        if (verbose) {
+                            console.log(`Starting ${key}...`);
+                        }
+
+                        rl.close();
+
+                        resolve(nsec);
+                    } catch (e: any) {
+                        console.log(e.message);
+                        process.exit(1);
+                    }
+                });
+            }
         } else if (keyData.key) {
             const nsec = keyData.key;
 
@@ -197,3 +218,9 @@ async function startKey(key: string, keyData: KeyData, verbose: boolean): Promis
         }
     });
 }
+```
+
+Commit und push. Railway baut neu. Dann sollte in den Logs stehen:
+```
+🔑 Starting keys ['steven']
+Starting steven (using env passphrase)...
