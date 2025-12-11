@@ -25,4 +25,4 @@ RUN mkdir -p /app/config
 
 EXPOSE 3000
 
-CMD ["node", "dist/index.js"]
+CMD ["node", "./scripts/start.js", "start"]
