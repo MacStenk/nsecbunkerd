@@ -218,9 +218,3 @@ async function startKey(key: string, keyData: KeyData, verbose: boolean): Promis
         }
     });
 }
-```
-
-Commit und push. Railway baut neu. Dann sollte in den Logs stehen:
-```
-🔑 Starting keys ['steven']
-Starting steven (using env passphrase)...
