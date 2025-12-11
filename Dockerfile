@@ -22,4 +22,4 @@ RUN mkdir -p /app/config
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "node ./scripts/start.js start --keys ${NSECBUNKER_KEYS:-}"]
+CMD ["node", "./scripts/start.js", "start", "--keys", "steven"]
