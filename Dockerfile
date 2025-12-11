@@ -1,15 +1,12 @@
 FROM node:18
 
-# Install pnpm
-RUN npm install -g pnpm
-
 WORKDIR /app
 
 # Copy package files
-COPY package.json pnpm-lock.yaml ./
+COPY package.json ./
 
-# Install dependencies
-RUN pnpm install --force
+# Install dependencies with npm (not pnpm)
+RUN npm install --legacy-peer-deps
 
 # Copy source
 COPY . .
@@ -18,7 +15,7 @@ COPY . .
 RUN npx prisma generate
 
 # Build
-RUN pnpm run build
+RUN npm run build
 
 # Create config directory
 RUN mkdir -p /app/config
